@@ -1,5 +1,6 @@
 import subprocess
 import re
+import GPUtil
 
 def arch_code_to_str(code):
     """Convert architecture code into model"""
@@ -30,7 +31,7 @@ def memory_type_to_str(code):
     }
     return types.get(code, "Unknown")
 
-def get_processor_info():
+def get_processor_details():
     try:
         powershell_cmd = (
             "Get-CimInstance Win32_Processor | "
@@ -56,7 +57,7 @@ def get_processor_info():
     except Exception as e:
         return {"Error": str(e)}
 
-def get_memory_cards_info():
+def get_memory_cards_details():
     try:
         powershell_cmd = (
             "Get-CimInstance -ClassName Win32_PhysicalMemory | "
@@ -81,12 +82,28 @@ def get_memory_cards_info():
     except Exception as e:
         print(f"Error: {str(e)}")
 
+def get_grpahics_card_details():
+    gpus = GPUtil.getGPUs()
+    for gpu in gpus:
+        print(f"GPU ID: {gpu.id}")
+        print(f"GPU Name: {gpu.name}")
+        print(f"GPU Memory Total: {gpu.memoryTotal} MB")
+        print(f"GPU Memory Free: {gpu.memoryFree} MB")
+        print(f"GPU Memory Used: {gpu.memoryUsed} MB")
+        print(f"GPU Load: {gpu.load * 100}%")
+        print(f"GPU Temperature: {gpu.temperature} °C")
+
+
 
 if __name__ =="__main__":
     print("\nPorcessor Info:")
-    print("-----------------------------")
-    get_processor_info()
+    print("-" *40)
+    get_processor_details()
 
     print("\n\nMemory Info:")
-    print("-----------------------------")
-    get_memory_cards_info()
+    print("-" *40)
+    get_memory_cards_details()
+    
+    print("\n\nGraphics Card Info:")
+    print("-" *40)
+    get_grpahics_card_details()
