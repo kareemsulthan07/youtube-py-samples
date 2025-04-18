@@ -1,6 +1,7 @@
 import subprocess
 import re
 import GPUtil
+import wmi
 
 def arch_code_to_str(code):
     """Convert architecture code into model"""
@@ -93,6 +94,14 @@ def get_grpahics_card_details():
         print(f"GPU Load: {gpu.load * 100}%")
         print(f"GPU Temperature: {gpu.temperature} °C")
 
+def get_bios_details():
+    c = wmi.WMI()
+    bios = c.win32_bios()[0]
+    print(f"BIOS Version: {bios.version}")
+    print(f"Manufacturer: {bios.manufacturer}")
+    print(f"Serial Number: {bios.serialnumber}")
+    print(f"SMBIOS Version: {bios.smbiosmajorversion}.{bios.smbiosminorversion}")
+    print(f"BIOS Characteristics: {bios.bioscharacteristics}")
 
 
 if __name__ =="__main__":
@@ -107,3 +116,7 @@ if __name__ =="__main__":
     print("\n\nGraphics Card Info:")
     print("-" *40)
     get_grpahics_card_details()
+    
+    print("\n\nBIOS Info:")
+    print("-" *40)
+    get_bios_details()
